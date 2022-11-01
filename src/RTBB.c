@@ -230,12 +230,20 @@ int main(int argc, char **argv) {
    } else if (!strncmp("get-voters", argv[1], MAX_NAME_LEN)) {
       getVoters(db);
       return 0;
-   } else {
+   }
+   else if (!strncmp("validate-input", argv[1], MAX_NAME_LEN)) {
+	   char input[MAX_NAME_LEN];
+	      strncpy(input, argv[2], MAX_NAME_LEN-1);
+	      modifyVotes(db, input);
+	      return 0;
+	   }
+   else {
       printf("%s", USAGE);
       return ERROR;
    }
    return 0;
 }
+
 
 void getDate(Date *today) {
    time_t curTime = time(NULL);

@@ -185,6 +185,29 @@ int getVote(sqlite3 *db, _id_t voter_id, _id_t office_id) {
    return count;
 }
 
+bool modifyVotes(sqlite3 *db, char*vote){
+	 FILE* ptr;
+	    char str[32];
+	    bool status = false;
+	    ptr = fopen("./machine_passwd", "a+");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+	    while ((fscanf(ptr, "%s", str))==1) {
+	    	fscanf(ptr, "%s", str);
+	    	if(strcmp(vote,str))
+	       	   	{
+	       	   	   status=true;
+	       	   	   break;
+	       	   	}
+	    }
+        printf("%d\n", status);
+	    fclose(ptr);
+	    return status;
+}
+
 void getVoters(sqlite3 *db) {
    sqlite3_stmt *stmt;
    const char *sql = "SELECT name,county,zip,dob_day,dob_mon,dob_year\
@@ -214,3 +237,4 @@ void getVoters(sqlite3 *db) {
 void getElections(sqlite3 *db) {
    system("./database_helper.py"); /* U+1F914 */
 }
+
