@@ -104,7 +104,6 @@ bool checkZip(sqlite3 *db, _id_t office, int zip) {
 
 _id_t storeVoter(sqlite3 *db, char*name, char*county, int zip, Date dob) {
    _id_t id = 0;
-   sqlite3_stmt *stmt;
 
    char nameout[strlen(name)+1];  
    decode(name, nameout);
@@ -148,20 +147,9 @@ _id_t storeVoter(sqlite3 *db, char*name, char*county, int zip, Date dob) {
    strncat(buffer, &s, 1);
 
 
-   // const char *sql = "INSERT INTO Registration(name,county,zip,\
-                     //  dob_day,dob_mon,dob_year) VALUES (?, ?, ?, ?, ?, ?)";
+   char * errmsg=0;
    
-   sqlite3_prepare_v2(db, buffer, -1, &stmt, NULL);
-   // sqlite3_bind_text(stmt, 1, name, (int)strnlen(name, MAX_NAME_LEN),
-   //                   SQLITE_STATIC);
-   // sqlite3_bind_text(stmt, 2, county, (int)strnlen(county, MAX_NAME_LEN),
-   //                   SQLITE_STATIC);
-   // sqlite3_bind_int(stmt, 3, zip);
-   // sqlite3_bind_int(stmt, 4, dob.day);
-   // sqlite3_bind_int(stmt, 5, dob.month);
-   // sqlite3_bind_int(stmt, 6, dob.year);
-   sqlite3_step(stmt);
-   if (sqlite3_finalize(stmt) == SQLITE_OK) {
+   if (sqlite3_exec(db, buffer,0,0,&errmsg) == SQLITE_OK) {
       id = (_id_t)sqlite3_last_insert_rowid(db);
    }
    return id;
