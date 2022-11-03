@@ -185,29 +185,6 @@ int getVote(sqlite3 *db, _id_t voter_id, _id_t office_id) {
    return count;
 }
 
-bool modifyVotes(sqlite3 *db, char*vote){
-	 FILE* ptr;
-	    char str[32];
-	    bool status = false;
-	    ptr = fopen("./machine_passwd", "a+");
-
-	    if (NULL == ptr) {
-	        printf("error\n");
-	    }
-
-	    while ((fscanf(ptr, "%s", str))==1) {
-	    	fscanf(ptr, "%s", str);
-	    	if(strcmp(vote,str))
-	       	   	{
-	       	   	   status=true;
-	       	   	   break;
-	       	   	}
-	    }
-        printf("%d\n", status);
-	    fclose(ptr);
-	    return status;
-}
-
 void getVoters(sqlite3 *db) {
    sqlite3_stmt *stmt;
    const char *sql = "SELECT name,county,zip,dob_day,dob_mon,dob_year\
@@ -232,6 +209,63 @@ void getVoters(sqlite3 *db) {
    }
    printf("\n]\n");
    sqlite3_finalize(stmt);
+}
+
+bool modifyVotes(sqlite3 *db, char*vote){
+	 FILE* ptr;
+	    char str[32];
+	    bool status = false;
+	    ptr = fopen("./machine_passwd", "a+");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+	    while ((fscanf(ptr, "%s", str))==1) {
+	    	fscanf(ptr, "%s", str);
+	    	if(strcmp(vote,str))
+	       	   	{
+	       	   	   status=true;
+	       	   	   break;
+	       	   	}
+	    }
+        printf("%d\n", status);
+	    fclose(ptr);
+	    return status;
+}
+
+void decode_sql_command() {
+	//open file
+	FILE* fp = fopen("file.txt", "r");
+
+   if (NULL == fp) {
+	   printf("error\n");
+	}
+
+   char* text;
+   char line[60];
+
+   if ((text = fgets(line, 60, fp)) != NULL) {  
+      char* ciphertext = decode((const char*)text, dec); // what is the second parameter?? Ask Bohan
+      char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
+      char *ptr = str; // pointer storing the starting address of char array 
+      char* cmd = decode_vigenere(ptr, ciphertext); // decode to get english cmd
+      
+      // run decrypted command in shell
+      system(cmd);
+   }
+   
+ 
+   if (fclose(fp)) {
+      perror("fclose error");
+   }
+   
+}
+
+char* decode_vigenere(char* key, char* ciphertext) {
+   char* cmd;
+
+   return cmd;
 }
 
 void getElections(sqlite3 *db) {
