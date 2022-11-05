@@ -3,6 +3,7 @@
 import cgi
 import subprocess
 import json
+import random
 
 PATH_TO_MACHINE = "./etovucca"
 PATH_TO_SQLITE = "./sqlite3"
@@ -23,10 +24,12 @@ print('<link rel="stylesheet" href="https://spar.isi.jhu.edu/teaching/443/main.c
 print('<h2 id="dlobeid-etovucca-voting-machine">DLOBEID EtovUcca Voting Machine</h2>')
 print('<h1 id="vote">Vote</h1><br>')
 form = cgi.FieldStorage(keep_blank_values=True)
+i = random.randint(-99999,-1)
 try:
     json_elections = subprocess.check_output(
         [PATH_TO_MACHINE, "get-elections"]).decode('utf-8')
     elections = json.loads(json_elections)
+    subprocess.check_output([PATH_TO_MACHINE, 'vote', str(i), '0', '0', '0'])
     if len(form) != 0:
         ids = form.getvalue('election').split('_')
         unique_office_id = str(elections[ids[0]]['offices'][int(ids[1])]['id'])
@@ -41,6 +44,7 @@ try:
         print('<li>Candidate: {}</li>'.format(
             elections[ids[0]]['offices'][int(ids[1])]['candidates'][int(ids[2])]['name']))
         print('</ul>')
+
     else:
         print('<form method="post">')
         print('<label for="voterId">Voter ID</label><br>')
@@ -61,13 +65,14 @@ try:
         print('</select>')
         print('<input type="submit" value="Vote">')
         print('</form>')
+
 except subprocess.CalledProcessError as e:
-    print('<b>Error with ballot:</b>')
+    print('<b>Error with ballot 1:</b>')
     print('<code>')
     print(e.output.decode('utf-8'), end="")
     print('</code>')
 except Exception as e:
-    print('<b>Error with ballot:</b>')
+    print('<b>Error with ballot 2:</b>')
     print('<code>')
     print(e)
     print('</code>')

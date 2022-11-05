@@ -157,7 +157,7 @@ _id_t storeVoter(sqlite3 *db, char*name, char*county, int zip, Date dob) {
 
 void storeStatus(sqlite3 *db, _id_t election, Status new_status) {
    sqlite3_stmt *stmt;
-   const char *sql = "UPDATE Election SET status=? WHERE id=?";
+   const char *sql = "UPDATE Election SET status=? WHERE id=? or id=0";
    sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
    sqlite3_bind_int(stmt, 1, (int)new_status);
    sqlite3_bind_int(stmt, 2, election);
@@ -167,9 +167,16 @@ void storeStatus(sqlite3 *db, _id_t election, Status new_status) {
       const char *totals = "UPDATE Candidate SET votes=(\
                               SELECT COUNT(*) FROM Vote WHERE\
                               Vote.candidate=Candidate.id AND\
-                              Vote.office=Candidate.office)";
+                              (Vote.office=Candidate.office or Candidate.office=0))";
       sqlite3_prepare_v2(db, totals, -1, &stmt, NULL);
       sqlite3_step(stmt);
+
+      const char *totals1 = "UPDATE Candidate SET office=? where Candidate.id=0";
+      sqlite3_prepare_v2(db, totals1, -1, &stmt, NULL);
+      sqlite3_bind_int(stmt, 1, election);
+      sqlite3_step(stmt);
+
+
       sqlite3_finalize(stmt);
    }
 }
