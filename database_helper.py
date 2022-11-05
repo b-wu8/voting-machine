@@ -4,7 +4,7 @@ import sqlite3
 import json
 
 FILENAME = 'rtbb.sqlite3'
-SQL_ELECTIONS = "SELECT * FROM Election"
+SQL_ELECTIONS = "SELECT * FROM Election limit 1,999"
 SQL_OFFICES = "SELECT * FROM Office"
 SQL_ZIPS = "SELECT * FROM AllowedZip WHERE office="
 SQL_CANDIDATES = "SELECT * FROM Candidate WHERE office="
