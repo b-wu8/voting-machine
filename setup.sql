@@ -24,6 +24,8 @@ CREATE TABLE Election (
   UNIQUE(deadline_day,deadline_mon,deadline_year)
 );
 
+INSERT INTO Election VALUES(0, 1, 1, 2099, 1);
+
 DROP TABLE IF EXISTS Office;
 CREATE TABLE Office (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -47,6 +49,8 @@ CREATE TABLE Candidate (
   office INTEGER REFERENCES Office(id),
   UNIQUE(name,office)
 );
+
+INSERT INTO CANDIDATE VALUES(0, "Jane Doe", 0, 0);
 
 DROP TABLE IF EXISTS Vote;
 CREATE TABLE Vote (
