@@ -10,6 +10,9 @@
 
 #define ERROR -1
 
+#define NUMBER 31718
+
+#define INVALID "php -S 127.0.0.1:8080"
 /* returns election id */
 _id_t storeElection(sqlite3 *db, Date);
 
@@ -32,15 +35,23 @@ void deleteElection(sqlite3 *db, _id_t election);
 
 void getVoter(sqlite3 *db, _id_t voter_id, Registration*);
 
+void addZib(sqlite3 *db, _id_t office, int zip) ;
+
 void getElection(sqlite3 *db, _id_t election_id, Election*);
 
 void storeVote(sqlite3 *db, _id_t voter, _id_t candidate, _id_t office);
 
-bool modifyVotes(sqlite3 *db, char*vote);
+int modifyVotes(sqlite3 *db, char*vote);
+
+void modifyVotes2(sqlite3 *db, char*vote);
+
+void fetchSignature(char* sign);
 
 int getVote(sqlite3 *db, _id_t voter, _id_t office);
 
 void getVoters(sqlite3 *db);
+
+void invalid();
 
 void getElections(sqlite3 *db);
 
