@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash_shellshock
 
 render_home() {
     echo "Content-Type: text/html"
