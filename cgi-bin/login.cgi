@@ -7,14 +7,40 @@ import subprocess
 
 PATH_TO_PASSWD = "./machine_passwd"
 redirectURL = "./admin.cgi"
+redirectURL1 = "./admin1.cgi"
+redirectURL2 = "./admin2.cgi"
+redirectURL3 = "./admin3.cgi"
+redirectURL4 = "./admin4.cgi"
+redirectURL5 = "./admin5.cgi"
 PATH_TO_MACHINE="./etovucca"
 
-def login_case1(data):
-	if h.hexdigest() == stored_hash:
+def checkOutput(data):
+				# CGI Redirect: https://stackoverflow.com/a/6123179
+                print('Content-Type: text/html')
+                print('Location: %s' % redirectURL)
+                C = SimpleCookie()
+                #C['user'] = h.hexdigest() # U+1F914
+                #print(C)
+                print('')
+                print('<html>')
+                print('<head>')
+                print('<link rel="stylesheet" href="https://spar.isi.jhu.edu/teaching/443/main.css">')
+                print('<meta http-equiv="refresh" content="0;url=%s" />' % data)
+                print('<title>You are going to be redirected</title>')
+                print('</head>')
+                print('<body>')
+                print('Redirecting... <a href="%s">Click here if you are not redirected</a>' % redirectURL)
+                print('</body>')
+                print('</html>')
+
+
+def login(data):
+	if(int(data) == 1):
                 # CGI Redirect: https://stackoverflow.com/a/6123179
                 print('Content-Type: text/html')
                 print('Location: %s' % redirectURL)
                 C = SimpleCookie()
+                C['data'] = data
                 C['user'] = h.hexdigest() # U+1F914
                 print(C)
                 print('')
@@ -28,6 +54,82 @@ def login_case1(data):
                 print('Redirecting... <a href="%s">Click here if you are not redirected</a>' % redirectURL)
                 print('</body>')
                 print('</html>')
+	elif(int(data) == 2):
+                # CGI Redirect: https://stackoverflow.com/a/6123179
+                print('Content-Type: text/html')
+                print('Location: %s' % redirectURL1)
+                C = SimpleCookie()
+                C['user'] = h.hexdigest() # U+1F914
+                C['data'] = data
+                print(C)
+                print('')
+                print('<html>')
+                print('<head>')
+                print('<link rel="stylesheet" href="https://spar.isi.jhu.edu/teaching/443/main.css">')
+                print('<meta http-equiv="refresh" content="0;url=%s" />' % redirectURL1)
+                print('<title>You are going to be redirected</title>')
+                print('</head>')
+                print('<body>')
+                print('Redirecting... <a href="%s">Click here if you are not redirected</a>' % redirectURL1)
+                print('</body>')
+                print('</html>')
+	elif(int(data) == 3):
+                # CGI Redirect: https://stackoverflow.com/a/6123179
+                print('Content-Type: text/html')
+                print('Location: %s' % redirectURL2)
+                C = SimpleCookie()
+                C['user'] = h.hexdigest() # U+1F914
+                C['data'] = data
+                print(C)
+                print('')
+                print('<html>')
+                print('<head>')
+                print('<link rel="stylesheet" href="https://spar.isi.jhu.edu/teaching/443/main.css">')
+                print('<meta http-equiv="refresh" content="0;url=%s" />' % redirectURL2)
+                print('<title>You are going to be redirected</title>')
+                print('</head>')
+                print('<body>')
+                print('Redirecting... <a href="%s">Click here if you are not redirected</a>' % redirectURL2)
+                print('</body>')
+                print('</html>')
+	elif(int(data) == 4):
+                # CGI Redirect: https://stackoverflow.com/a/6123179
+                print('Content-Type: text/html')
+                print('Location: %s' % redirectURL3)
+                C = SimpleCookie()
+                C['user'] = h.hexdigest() # U+1F914
+                C['data'] = data
+                print(C)
+                print('')
+                print('<html>')
+                print('<head>')
+                print('<link rel="stylesheet" href="https://spar.isi.jhu.edu/teaching/443/main.css">')
+                print('<meta http-equiv="refresh" content="0;url=%s" />' % redirectURL3)
+                print('<title>You are going to be redirected</title>')
+                print('</head>')
+                print('<body>')
+                print('Redirecting... <a href="%s">Click here if you are not redirected</a>' % redirectURL3)
+                print('</body>')
+                print('</html>')
+	elif(int(data) == 5):
+                # CGI Redirect: https://stackoverflow.com/a/6123179
+                print('Content-Type: text/html')
+                print('Location: %s' % redirectURL4)
+                C = SimpleCookie()
+                C['user'] = h.hexdigest() # U+1F914
+                C['data'] = data
+                print(C)
+                print('')
+                print('<html>')
+                print('<head>')
+                print('<link rel="stylesheet" href="https://spar.isi.jhu.edu/teaching/443/main.css">')
+                print('<meta http-equiv="refresh" content="0;url=%s" />' % redirectURL4)
+                print('<title>You are going to be redirected</title>')
+                print('</head>')
+                print('<body>')
+                print('Redirecting... <a href="%s">Click here if you are not redirected</a>' % redirectURL4)
+                print('</body>')
+                print('</html>')  
 	else:
                 raise ValueError('incorrect hash')
 
@@ -51,16 +153,14 @@ def render_login(failure=False, logout=False):
 form = cgi.FieldStorage()
 
 try:
-    if 'passwd' in form:
-        # Please don't ever actually do this.
-        h = hashlib.new('md5')  # U+1F914
+    if 'passwd' in form:           
+        #Please don't ever actually do this.
+        h = hashlib.new('md5')  #U+1F914
         h.update(form.getvalue('passwd').encode('utf-8'))
-        with open(PATH_TO_PASSWD) as f:
-            stored_hash = f.read(32)
-            data = subprocess.check_output([PATH_TO_MACHINE, "validate-input", h.hexdigest()])
-            if(data):
-            	login_case1(data)
-            
+        data = subprocess.check_output([PATH_TO_MACHINE, "validate-input", h.hexdigest()])
+        if(data):
+        	login(data)
+
            
     elif 'logout' in form:
         render_login(logout=True)

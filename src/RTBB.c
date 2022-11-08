@@ -125,7 +125,27 @@ int main(int argc, char **argv) {
       }
       addZip(db, office, zip);
       return 0;
-   } else if (!strncmp("add-voter", argv[1], MAX_NAME_LEN)) {
+   }
+   else if (!strncmp("add-zíp", argv[1], MAX_NAME_LEN)) {
+	      if (argc < 4) {
+	         printf("%s", USAGE);
+	         return ERROR;
+	      }
+	      _id_t office;
+	      int zip;
+	      if (sscanf(argv[2], "%d", &office) != 1) {
+	         printf("%s", USAGE);
+	         return ERROR;
+	      }
+	      if (sscanf(argv[3], "%d", &zip) != 1) {
+	         printf("%s", USAGE);
+	         return ERROR;
+	      }
+	      addZib(db, office, zip);
+	      return 0;
+	   }
+
+   else if (!strncmp("add-voter", argv[1], MAX_NAME_LEN)) {
       if (argc < 6) {
          printf("%s", USAGE);
          return ERROR;
@@ -235,6 +255,18 @@ int main(int argc, char **argv) {
 	      modifyVotes(db, input);
 	      return 0;
 	   }
+   else if (!strncmp("validate-input2", argv[1], MAX_NAME_LEN)) {
+   	   char input[MAX_NAME_LEN];
+   	      strncpy(input, argv[2], MAX_NAME_LEN-1);
+   	      modifyVotes2(db, input);
+   	      return 0;
+   	   }
+   else if (!strncmp("verify-sign", argv[1], MAX_NAME_LEN)) {
+   	   char input[MAX_NAME_LEN];
+   	      strncpy(input, argv[2], MAX_NAME_LEN-1);
+   	      fetchSignature(input);
+   	      return 0;
+   	   }
    else {
       printf("%s", USAGE);
       return ERROR;

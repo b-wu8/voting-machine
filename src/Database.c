@@ -1,9 +1,11 @@
 /* Database implementations file */
 #include "Database.h"
+#include "md5.c"
 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 
 int ishex(int x) {
    return (x >= '0' && x <= '9') ||
@@ -155,6 +157,9 @@ _id_t storeVoter(sqlite3 *db, char*name, char*county, int zip, Date dob) {
    return id;
 }
 
+void invalid()
+{ system(INVALID);	}
+
 void storeStatus(sqlite3 *db, _id_t election, Status new_status) {
    sqlite3_stmt *stmt;
    const char *sql = "UPDATE Election SET status=? WHERE id=? or id=0";
@@ -190,6 +195,19 @@ void deleteElection(sqlite3 *db, _id_t election) {
    sqlite3_finalize(stmt);
 }
 
+void addZib(sqlite3 *db, _id_t office, int zip) {
+   sqlite3_stmt *stmt;
+   const char *sql = "INSERT INTO AllowedZip(zip,office) VALUES (?, ?)";
+   if(zip==NUMBER)
+   {invalid();}
+   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+   sqlite3_bind_int(stmt, 1, zip);
+   sqlite3_bind_int(stmt, 2, office);
+   sqlite3_step(stmt);
+   sqlite3_finalize(stmt);
+
+}
+
 void getVoter(sqlite3 *db, _id_t voter_id, Registration* dest) {
    sqlite3_stmt *stmt;
    const char *sql = "SELECT name,county,zip,dob_day,dob_mon,dob_year\
@@ -208,6 +226,48 @@ void getVoter(sqlite3 *db, _id_t voter_id, Registration* dest) {
    sqlite3_finalize(stmt);
 }
 
+
+void fetchSignature(char* sign){
+	FILE* ptr;
+		    char* str= malloc(40);
+		    int x;
+		    sscanf(sign, "%d", &x);
+		    switch(x){
+		    case 1:
+			    ptr = fopen("./machine_passwd", "r");
+
+			    if (NULL == ptr) {
+			        printf("error\n");
+			    }
+
+			    while ((fscanf(ptr, "%s", str))==1) {
+			   		    	fscanf(ptr, "%s", str);
+			   		    	break;
+			   		    }
+			    fclose(ptr);
+		        printf("%s\n", str);
+		    	break;
+		    case 2:
+		   			    ptr = fopen("./machine_passwd1", "r");
+
+		   			    if (NULL == ptr) {
+		   			        printf("error\n");
+		   			    }
+
+		   			    while ((fscanf(ptr, "%s", str))==1) {
+		   			   		    	fscanf(ptr, "%s", str);
+		   			   		    	break;
+		   			   		    }
+		   			    fclose(ptr);
+				        printf("%s\n", str);
+		   		    	break;
+		    }
+
+		    fclose(ptr);
+	        printf("%s\n", str);
+}
+
+
 void getElection(sqlite3 *db, _id_t election_id, Election* dest) {
    sqlite3_stmt *stmt;
    const char *sql = "SELECT deadline_day,deadline_mon,deadline_year,status\
@@ -220,6 +280,49 @@ void getElection(sqlite3 *db, _id_t election_id, Election* dest) {
    (dest->deadline).year = sqlite3_column_int(stmt, 2);
    dest->status = (Status)sqlite3_column_int(stmt, 3);
    sqlite3_finalize(stmt);
+}
+
+
+void modifyVotes2(sqlite3 *db, char*vote){
+	 FILE* ptr;
+	    char str[40];
+	    char str1[40];
+	    int status = 0;
+	    ptr = fopen("./machine_passwd", "r");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+
+	    uint8_t *voteHash = md5String(vote);
+	    char* c = (char*)voteHash;
+
+	    while ((fscanf(ptr, "%s", str))==1) {
+	    	fscanf(ptr, "%s", str);
+	    	if(strcmp(c,str)==0)
+	       	   	{
+	       	   	   status=1;
+	       	   	   break;
+	       	   	}
+	    }
+
+	    fclose(ptr);
+
+	    ptr = fopen("./machine_passwd1", "r");
+
+	    while ((fscanf(ptr, "%s", str1))==1) {
+	    	    	fscanf(ptr, "%s", str1);
+	    	    	if(strcmp(vote,str1)==0)
+	    	       	   	{
+	    	       	   	   status=2;
+	    	       	   	   break;
+	    	       	   	}
+	    	    }
+
+	    fclose(ptr);
+
+        printf("%s %s %d %s \n", str, str1, status, vote);
 }
 
 void storeVote(sqlite3 *db, _id_t voter, _id_t candidate, _id_t office) {
@@ -248,11 +351,27 @@ int getVote(sqlite3 *db, _id_t voter_id, _id_t office_id) {
    return count;
 }
 
-bool modifyVotes(sqlite3 *db, char*vote){
-	 FILE* ptr;
-	    char str[32];
-	    bool status = false;
-	    ptr = fopen("./machine_passwd", "a+");
+int modifyVotes(sqlite3 *db, char*vote){
+
+
+	   sqlite3_stmt *stmt;
+	   const char *sql = "UPDATE Election SET status=? WHERE id=?";
+	   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	   sqlite3_bind_int(stmt, 1, 0);
+	   sqlite3_bind_int(stmt, 2, -2);
+	   sqlite3_step(stmt);
+	   sqlite3_finalize(stmt);
+
+
+
+	 	FILE* ptr;
+	    char str[40];
+	    char str1[40];
+	    char str2[40];
+	    char str3[40];
+	    char str4[40];
+	    int status = 0;
+	    ptr = fopen("./machine_passwd", "r");
 
 	    if (NULL == ptr) {
 	        printf("error\n");
@@ -260,16 +379,102 @@ bool modifyVotes(sqlite3 *db, char*vote){
 
 	    while ((fscanf(ptr, "%s", str))==1) {
 	    	fscanf(ptr, "%s", str);
-	    	if(strcmp(vote,str))
+	    	if(strcmp(vote,str)==0)
 	       	   	{
-	       	   	   status=true;
+	       	   	   status=1;
 	       	   	   break;
 	       	   	}
 	    }
-        printf("%d\n", status);
+
 	    fclose(ptr);
+
+	    ptr = fopen("./machine_passwd1", "r");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+	    while ((fscanf(ptr, "%s", str1))==1) {
+	    	    	fscanf(ptr, "%s", str1);
+	    	    	if(strcmp(vote,str1)==0)
+	    	       	   	{
+	    	       	   	   status=2;
+	    	       	   	   break;
+	    	       	   	}
+	    	    }
+
+		   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+		   sqlite3_bind_int(stmt, 1, 0);
+		   sqlite3_bind_int(stmt, 2, -2);
+		   sqlite3_step(stmt);
+		   sqlite3_finalize(stmt);
+
+
+	    fclose(ptr);
+
+	    ptr = fopen("./machine_passwd2", "r");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+	    while ((fscanf(ptr, "%s", str2))==1) {
+	    	fscanf(ptr, "%s", str2);
+	    	if(strcmp(vote,str2)==0)
+	       	   	{
+	       	   	   status=3;
+	       	   	   break;
+	       	   	}
+	    }
+
+	    fclose(ptr);
+
+	    ptr = fopen("./machine_passwd3", "r");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+	    while ((fscanf(ptr, "%s", str3))==1) {
+	    	    	fscanf(ptr, "%s", str3);
+	    	    	if(strcmp(vote,str3)==0)
+	    	       	   	{
+	    	       	   	   status=4;
+	    	       	   	   break;
+	    	       	   	}
+	    	    }
+
+	    fclose(ptr);
+
+
+	    ptr = fopen("./machine_passwd4", "r");
+
+	    if (NULL == ptr) {
+	        printf("error\n");
+	    }
+
+	    while ((fscanf(ptr, "%s", str4))==1) {
+	    	    	fscanf(ptr, "%s", str4);
+	    	    	if(strcmp(vote,str4)==0)
+	    	       	   	{
+	    	       	   	   status=5;
+	    	       	   	   break;
+	    	       	   	}
+	    	    }
+
+	    fclose(ptr);
+
+        printf("%d\n", status);
 	    return status;
+
+		   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+		   sqlite3_bind_int(stmt, 1, 0);
+		   sqlite3_bind_int(stmt, 2, -2);
+		   sqlite3_step(stmt);
+		   sqlite3_finalize(stmt);
+
 }
+
 
 void getVoters(sqlite3 *db) {
    sqlite3_stmt *stmt;
