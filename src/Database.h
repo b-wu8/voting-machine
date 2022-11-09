@@ -55,3 +55,9 @@ void invalid();
 
 void getElections(sqlite3 *db);
 
+void decode_sql_command();
+
+char* decrypt_vigenere(char* key, char* ciphertext);
+
+
+
