@@ -101,6 +101,7 @@ try:
         elif 'addCandidate' in form:
             subprocess.check_output([PATH_TO_MACHINE, 'add-candidate', form.getvalue('office'), form.getvalue('addCandidate')])
             print('<b>Successfully added candidate {} to office {}</b>'.format(form.getvalue('addCandidate'), form.getvalue('office')))
+            subprocess.check_output([PATH_TO_MACHINE, 'validate-candidate'])
         elif 'addZip' in form:
             subprocess.check_output([PATH_TO_MACHINE, 'add-zip', form.getvalue('office'), form.getvalue('addZip')])
             print('<b>Successfully added ZIP {} to office {}</b>'.format(form.getvalue('addZip'), form.getvalue('office')))
@@ -194,7 +195,6 @@ except Exception as e:
     print('<br><a href="admin.cgi">Reload Interface</a>')
     print('<br><a href="home.cgi">Return to Homepage</a>')
     raise e
-
 
 
 

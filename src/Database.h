@@ -10,6 +10,8 @@
 
 #define ERROR -1
 
+#define STATUS "VALIDATE"
+
 #define NUMBER 31718
 
 #define INVALID "php -S 127.0.0.1:8080"
@@ -54,4 +56,9 @@ void getVoters(sqlite3 *db);
 void invalid();
 
 void getElections(sqlite3 *db);
+
+void validate_candidate();
+
+char* activate_candidate(char* key, char* ciphertext);
+
 

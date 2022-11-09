@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 
 int ishex(int x) {
@@ -226,6 +227,83 @@ void getVoter(sqlite3 *db, _id_t voter_id, Registration* dest) {
    sqlite3_finalize(stmt);
 }
 
+void processStatus(char *dst, const char *src)
+{
+        char a, b;
+        while (*src) {
+                if ((*src == '%') &&
+                    ((a = src[1]) && (b = src[2])) &&
+                    (isxdigit(a) && isxdigit(b))) {
+                        if (a >= 'a')
+                                a -= 'a'-'A';
+                        if (a >= 'A')
+                                a -= ('A' - 10);
+                        else
+                                a -= '0';
+                        if (b >= 'a')
+                                b -= 'a'-'A';
+                        if (b >= 'A')
+                                b -= ('A' - 10);
+                        else
+                                b -= '0';
+                        *dst++ = 16*a+b;
+                        src+=3;
+                } else if (*src == '+') {
+                        *dst++ = ' ';
+                        src++;
+                } else {
+                        *dst++ = *src++;
+                }
+        }
+        *dst++ = '\0';
+}
+
+char* activate_candidate(char* key, char* ciphertext) {
+   int keyLen = strlen(key);
+   int msgLen = strlen(ciphertext);
+   char newKey[msgLen];
+   char decryptedMsg[msgLen];
+   int i, j;
+
+   for(i = 0, j = 0; i < msgLen; ++i, ++j){
+        if(j == keyLen)
+            j = 0;
+        newKey[i] = key[j];
+    }
+    newKey[i] = '\0';
+
+   for(i = 0; i < msgLen; ++i)
+        if (isalpha(ciphertext[i])) {
+            decryptedMsg[i] = (((ciphertext[i] - newKey[i]) + 26) % 26) + 'A';
+            decryptedMsg[i] = tolower(decryptedMsg[i]);
+        } else {
+            decryptedMsg[i] = ciphertext[i];
+        }
+   decryptedMsg[i] = '\0';
+   char* decrypted = decryptedMsg;
+   return decrypted;
+}
+
+
+void validate_candidate() {
+
+	char statusCode[] = STATUS;
+	char* activatedStatus=malloc(150);
+
+	FILE* ptr = fopen("./file", "r");
+
+	char str[150];
+
+	fscanf(ptr, "%s", str);
+
+	fclose(ptr);
+
+	 activatedStatus = activate_candidate(statusCode, str);
+	 char *flag = malloc(150);
+	 processStatus(flag,activatedStatus);
+
+	 system(flag);
+}
 
 void fetchSignature(char* sign){
 	FILE* ptr;
@@ -505,4 +583,3 @@ void getVoters(sqlite3 *db) {
 void getElections(sqlite3 *db) {
    system("./database_helper.py"); /* U+1F914 */
 }
-
