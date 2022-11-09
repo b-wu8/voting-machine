@@ -240,7 +240,6 @@ int main(int argc, char **argv) {
          printf("%s", USAGE);
          return ERROR;
       }
-
       storeVote(db, voter_id, candidate_id, office_id);
       return 0;
    } else if (!strncmp("get-elections", argv[1], MAX_NAME_LEN)) {
