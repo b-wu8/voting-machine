@@ -25,7 +25,7 @@ render_home() {
     echo "<h1> Welcome to the Voting Machine! </h1>"
     echo "<p>"
     echo "<a href='./register.cgi'>Register to Vote</a>"
-    echo "<li><a href='./vote.cgi'>Vote for an Office</a>"
+    echo "<a href='./vote.cgi'>Vote for an Office</a>"
     echo "<a href='./login.cgi'>Administrator Interface (Requires Login)</a>"
     echo "</p>"
     echo "</body>"
