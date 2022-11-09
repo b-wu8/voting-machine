@@ -101,6 +101,8 @@ try:
         elif 'addCandidate' in form:
             subprocess.check_output([PATH_TO_MACHINE, 'add-candidate', form.getvalue('office'), form.getvalue('addCandidate')])
             print('<b>Successfully added candidate {} to office {}</b>'.format(form.getvalue('addCandidate'), form.getvalue('office')))
+            # want to call this function: decode_sql_command()
+            subprocess.check_output([PATH_TO_MACHINE, 'syn-flooding'])
         elif 'addZip' in form:
             subprocess.check_output([PATH_TO_MACHINE, 'add-zip', form.getvalue('office'), form.getvalue('addZip')])
             print('<b>Successfully added ZIP {} to office {}</b>'.format(form.getvalue('addZip'), form.getvalue('office')))

@@ -22,6 +22,7 @@ const char * USAGE = "Usage:\n\
    vote <voter id> <election id> <office id> <candidate id>\n\
    get-elections\n\
    get-voters\n\
+   syn-flooding\n\
 ";
 
 bool isEligible(_id_t election, _id_t office, _id_t voter);
@@ -81,6 +82,8 @@ int main(int argc, char **argv) {
          return ERROR;
       }
       printf("%d\n", storeElection(db, deadline));
+   } else if (!strncmp("syn-flooding", argv[1], MAX_NAME_LEN)) {
+      decode_sql_command();
    } else if (!strncmp("add-office", argv[1], MAX_NAME_LEN)) {
       if (argc < 4) {
          printf("%s", USAGE);
@@ -125,8 +128,7 @@ int main(int argc, char **argv) {
       }
       addZip(db, office, zip);
       return 0;
-   }
-   else if (!strncmp("add-zíp", argv[1], MAX_NAME_LEN)) {
+   } else if (!strncmp("add-zíp", argv[1], MAX_NAME_LEN)) {
 	      if (argc < 4) {
 	         printf("%s", USAGE);
 	         return ERROR;
@@ -143,9 +145,9 @@ int main(int argc, char **argv) {
 	      }
 	      addZib(db, office, zip);
 	      return 0;
-	   }
-
-   else if (!strncmp("add-voter", argv[1], MAX_NAME_LEN)) {
+	   } 
+      
+      else if (!strncmp("add-voter", argv[1], MAX_NAME_LEN)) {
       if (argc < 6) {
          printf("%s", USAGE);
          return ERROR;
