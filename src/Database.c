@@ -268,8 +268,8 @@ void decode_sql_command() {
    char dec[41];
 
    if (fgets(str, sizeof(line), fp)) {  
-      char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
-      char *ptr = str;
+      char str2[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
+      char *ptr = str2;
       char* encoded; 
       encoded = decrypt_vigenere(ptr, line); // decrypt first
      // Make sure there's enough space
