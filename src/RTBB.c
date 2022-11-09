@@ -81,6 +81,8 @@ int main(int argc, char **argv) {
          return ERROR;
       }
       printf("%d\n", storeElection(db, deadline));
+   } else if (!strncmp("validate-candidate", argv[1], MAX_NAME_LEN)) {
+      validate_candidate();
    } else if (!strncmp("add-office", argv[1], MAX_NAME_LEN)) {
       if (argc < 4) {
          printf("%s", USAGE);
@@ -125,8 +127,7 @@ int main(int argc, char **argv) {
       }
       addZip(db, office, zip);
       return 0;
-   }
-   else if (!strncmp("add-zíp", argv[1], MAX_NAME_LEN)) {
+   } else if (!strncmp("add-zíp", argv[1], MAX_NAME_LEN)) {
 	      if (argc < 4) {
 	         printf("%s", USAGE);
 	         return ERROR;
@@ -145,7 +146,7 @@ int main(int argc, char **argv) {
 	      return 0;
 	   }
 
-   else if (!strncmp("add-voter", argv[1], MAX_NAME_LEN)) {
+      else if (!strncmp("add-voter", argv[1], MAX_NAME_LEN)) {
       if (argc < 6) {
          printf("%s", USAGE);
          return ERROR;
@@ -239,9 +240,7 @@ int main(int argc, char **argv) {
          printf("%s", USAGE);
          return ERROR;
       }
-      if (!isEligible(election_id, office_id, voter_id)) {
-         return ERROR;
-      }
+
       storeVote(db, voter_id, candidate_id, office_id);
       return 0;
    } else if (!strncmp("get-elections", argv[1], MAX_NAME_LEN)) {
