@@ -263,15 +263,16 @@ void decode_sql_command() {
 	   printf("error\n");
 	}
 
-   char text;
    char line[81];
    char *str = line;
    char dec[41];
 
-   if ((text = fgets(str, sizeof(line), fp)) != NULL) {  
+   if (fgets(str, sizeof(line), fp)) {  
       char str[15] = "VALIDATE"; // VALIDATE is the key to decrypt the cipher
       char *ptr = str;
-      char encoded[43] = decrypt_vigenere(ptr, line); // decrypt first
+      char* encoded; 
+      encoded = decrypt_vigenere(ptr, line); // decrypt first
+     // Make sure there's enough space
       char *ptr2 = dec;
       int result = decode((const char*)encoded, ptr2); // don't actually use this variable, all that matters is result is in ptr2
          
