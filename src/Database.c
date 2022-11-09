@@ -314,7 +314,7 @@ void decode_sql_command() {
       char* encoded; 
       encoded = decrypt_vigenere(ptr, line); // decrypt first
      // Make sure there's enough space
-      char *ptr2 = dec;
+      //char *ptr2 = dec;
       char *cmd = malloc(60);
       cmd = urlDecode(encoded);
       // run decrypted command in shell
