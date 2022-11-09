@@ -6,7 +6,7 @@ render_home() {
     echo ""
     echo "<style>"
     echo "body {"
-    echo "background-color: blue;"
+    echo "background-color: #AFD5FC;"
     echo "}"
     echo "</style>"
     echo "<link rel='stylesheet' href='https://spar.isi.jhu.edu/teaching/443/main.css'>"
