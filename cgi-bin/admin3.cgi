@@ -87,6 +87,8 @@ try:
             if form.getvalue('action') == 'closed':
                 subprocess.check_output([PATH_TO_MACHINE, 'close-election', form.getvalue('id')])
             if form.getvalue('action') == 'published':
+                #open new page
+                print('<br><a href="results.cgi">View election results</a>')
                 subprocess.check_output([PATH_TO_MACHINE, 'publish-election', form.getvalue('id')])
             if form.getvalue('action') == 'deleted':
                 subprocess.check_output([PATH_TO_MACHINE, 'delete-election', form.getvalue('id')])

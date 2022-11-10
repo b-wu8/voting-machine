@@ -21,6 +21,7 @@ render_results() {
     echo "<link rel='stylesheet' href='https://spar.isi.jhu.edu/teaching/443/main.css'>"
     echo "<body>"
     echo "<p> Election Results: </p>"
+    ./etovucca publish-election #cookies, fetch stuff here
     echo "<p><a href='./home.cgi'>Return home</a></p>"
     echo "</body>"
 }
