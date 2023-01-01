@@ -1,11 +1,15 @@
-# Root the (Ballot) Box
+# A "Very Secure" Voting System
+## Root the (Ballot) Box
 
-This is the base system for the e-voting project in Dr. Avi Rubin's CS
-443/643 Security and Privacy in Computing.
+It's not secure at all by default. This was (_not_) "written" with best practices
+in mind, but to demonstrate common vulnerabilities in online systems, such as webpages
+and databases. This project contains five fatal vulnerabilities that could result in 
+escalation of non-root user privileges, ability to modify election database, ability
+to insert malicious scripts, and much more beyond. 
 
-It's not very secure by default. This was _not_ written with best practices
-in mind, so in your testing you should see if the base system itself could be
-vulnerable to an attack!
+Please note that this project is NOT TO BE USED for any kind of reference. It is 
+purely used for educational purposes and fun for studying network and system 
+security. 
 
 ## Running the Front-End
 
@@ -59,7 +63,3 @@ Information on the CLI can be found [here](https://sqlite.org/cli.html).
 Also, please note the `./sqlite3` in the command. The SEED VM has its own
 version of `sqlite3`, but you should use the one bundled in this repository.
 
-Happy rooting! Please ask questions on Piazza if you need more help. We may
-update this base code as the project evolves.
-
-_Last Change: 2020-10-08 2:45 PM EDT_
